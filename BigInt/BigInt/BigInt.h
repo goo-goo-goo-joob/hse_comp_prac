@@ -1,7 +1,7 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 #pragma once
-#include <cstring>
+//#include <cstring>
 #include <string>
 #include <iostream>
 #include <algorithm>
@@ -50,7 +50,7 @@ public:
 	char* getValue() const {
 		return value;
 	}
-	unsigned int getSize() const {//может ли быть настолько длинным, чтобы не хватило места под размер?
+	unsigned int getSize() const {
 		return size;
 	}
 	bool getSign() const {
@@ -95,18 +95,20 @@ public:
 			string tmp = "";
 			int rem = 0;
 			for (int i = 0; i < max(size, rSize); i++) {
-				if (i >= size) {
-					tmp.push_back((-(valBi[i] - 48) + rem + 20) % 10 + 48);
-					if (-(valBi[i] - 48) + rem < 0)
-						rem = (-(valBi[i] - 48) + rem) / 10 - 1;
+				if (i >= rSize) {
+					tmp.push_back(((value[i] - 48) + rem + 20) % 10 + 48);
+					if ((value[i] - 48) + rem < 0)
+						rem = /*(-(valBi[i] - 48) + rem) / 10 */- 1;
 					else {
 						rem = 0;
 					}
 				}
 				else {
+					char a = valBi[i];
+					char b = value[i];
 					tmp.push_back((-(valBi[i] - 48) + (value[i] - 48) + rem + 20) % 10 + 48);
 					if (-(valBi[i] - 48) + (value[i] - 48) + rem < 0)
-						rem = (-(valBi[i] - 48) + (value[i] - 48) + rem) / 10 - 1;
+						rem = /*(-(valBi[i] - 48) + (value[i] - 48) + rem) / 10*/ - 1;
 					else {
 						rem = 0;
 					}
@@ -135,8 +137,9 @@ public:
 		}
 		else {
 			BigInt tmp(rBi);
-			BigInt tmp1(value);
+			BigInt tmp1(*this);
 			tmp.setSign(true);
+			tmp1.setSign(true);
 			return tmp - tmp1;
 		}
 
@@ -172,7 +175,8 @@ public:
 			return BigInt(tmp);
 		}
 		else if (!sign) {
-			BigInt tmp(value);
+			BigInt tmp(*this);
+			tmp.setSign(true);
 			return rBi - tmp;
 		}
 		else {
