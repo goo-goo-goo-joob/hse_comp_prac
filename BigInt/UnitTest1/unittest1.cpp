@@ -79,7 +79,7 @@ namespace UnitTest1
 			BigInt b2("147808829414345923316083210206383297601");
 			BigInt b3("192473537506592540147291397225384913855");
 			Assert::IsTrue(b1 - b2 == b3);
-			//Assert::IsTrue(b2 - b1 == -b3);
+			Assert::IsTrue(b2 - b1 == -b3);
 		}
 		TEST_METHOD(TestMethodPosNeg)
 		{
@@ -87,7 +87,7 @@ namespace UnitTest1
 			BigInt b2("-49269609804781974438694403402127765867");
 			BigInt b3("219410793265251206170381707118011871595");
 			Assert::IsTrue(b1 - b2 == b3);
-			//Assert::IsTrue(b2 - b1 == -b3);
+			Assert::IsTrue(b2 - b1 == -b3);
 		}
 		TEST_METHOD(TestMethodPosNegNeg)
 		{
@@ -95,7 +95,7 @@ namespace UnitTest1
 			BigInt b2("-265613988875874769338781322035779626829233452653394495974574961739092490901302182994384699044001");
 			BigInt b3("265613988875874769338781322035779628436171496912384771516537054080255093423505176777177534345377");
 			Assert::IsTrue(b1 - b2 == b3);
-			//Assert::IsTrue(b2 - b1 == -b3);
+			Assert::IsTrue(b2 - b1 == -b3);
 		}
 		TEST_METHOD(TestMethodNegNeg)
 		{
@@ -103,7 +103,7 @@ namespace UnitTest1
 			BigInt b2("-129934811447123020117172145698449");
 			BigInt b3("128667160846894790715675442493073");
 			Assert::IsTrue(b1 - b2 == b3);
-			//Assert::IsTrue(b2 - b1 == -b3);
+			Assert::IsTrue(b2 - b1 == -b3);
 		}
 
 	};

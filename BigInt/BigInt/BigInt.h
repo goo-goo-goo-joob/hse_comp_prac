@@ -60,9 +60,9 @@ public:
 		sign = b;
 	}
 	BigInt operator=(const BigInt &rBi) {
-		size = rBi.getSize();
-		sign = rBi.getSign();
-		char* stmp = rBi.getValue();
+		size = rBi.size;
+		sign = rBi.sign;
+		char* stmp = rBi.value;
 		delete[] value;
 		value = new char[size];
 		int i = 0;
@@ -78,25 +78,27 @@ public:
 	}
 
 	bool operator<(const BigInt &rBi) const {
-		bool rSign = rBi.getSign();
+		bool rSign = rBi.sign;
 		if (sign != rSign)
 			return sign == true ? true : false;
-		unsigned int rSize = rBi.getSize();
+		unsigned int rSize = rBi.size;
 		if (size != rSize)
 			return size < rSize;
-		char* valBi = rBi.getValue();
+		char* valBi = rBi.value;
 		int i = size - 1;
 		while (i >= 0) {
 			if (value[i] > valBi[i])
 				return false;
+			else if (value[i] < valBi[i])
+				return true;
 			i--;
 		}
 		return true;
 	}
 	bool operator==(const BigInt &rBi) const {
-		bool result = this->sign == rBi.sign && this->size == rBi.size;
-		for (int i = 0; i < this->size && result; i++) {
-			result = this->value[i] == rBi.value[i];
+		bool result = sign == rBi.sign && size == rBi.size;
+		for (int i = 0; i < size && result; i++) {
+			result = value[i] == rBi.value[i];
 		}
 		return result;
 	}
@@ -105,22 +107,22 @@ public:
 		return *this;
 	}
 	BigInt operator-(const BigInt &rBi) const {
-		bool rSign = rBi.getSign();
+		bool rSign = rBi.sign;
 		if (sign && rSign) {
 			if (*this < rBi) {
 				BigInt tmp = rBi - *this;
 				tmp.setSign(false);
 				return tmp;
 			}
-			char* valBi = rBi.getValue();
-			unsigned int rSize = rBi.getSize();
+			char* valBi = rBi.value;
+			unsigned int rSize = rBi.size;
 			string tmp = "";
 			int rem = 0;
 			for (int i = 0; i < max(size, rSize); i++) {
 				if (i >= rSize) {
 					tmp.push_back(((value[i] - 48) + rem + 20) % 10 + 48);
 					if ((value[i] - 48) + rem < 0)
-						rem = /*(-(valBi[i] - 48) + rem) / 10 */- 1;
+						rem = - 1;
 					else {
 						rem = 0;
 					}
@@ -130,7 +132,7 @@ public:
 					char b = value[i];
 					tmp.push_back((-(valBi[i] - 48) + (value[i] - 48) + rem + 20) % 10 + 48);
 					if (-(valBi[i] - 48) + (value[i] - 48) + rem < 0)
-						rem = /*(-(valBi[i] - 48) + (value[i] - 48) + rem) / 10*/ - 1;
+						rem = - 1;
 					else {
 						rem = 0;
 					}
@@ -148,7 +150,9 @@ public:
 			return BigInt(tmp);
 		}
 		else if (!sign && rSign) {
-			BigInt tmp = *this + rBi;
+			BigInt tmp1(*this);
+			tmp1.setSign(true);
+			BigInt tmp = tmp1 + rBi;
 			tmp.setSign(false);
 			return tmp;
 		}
@@ -167,9 +171,9 @@ public:
 
 	}
 	BigInt operator+(const BigInt &rBi) const {
-		char* valBi = rBi.getValue();
-		bool rSign = rBi.getSign();
-		unsigned int rSize = rBi.getSize();
+		char* valBi = rBi.value;
+		bool rSign = rBi.sign;
+		unsigned int rSize = rBi.size;
 		string tmp = "";
 		if (sign == rSign) {
 			unsigned int rem = 0;
@@ -207,15 +211,13 @@ public:
 			return *this - tmp;
 		}
 	}
-	BigInt operator+=(const BigInt&rBi) {
+	void operator+=(const BigInt&rBi) {
 		BigInt tmp = *this + rBi;
 		*this = tmp;
-		return *this;
 	}
-	BigInt operator-=(const BigInt&rBi) {
+	void operator-=(const BigInt&rBi) {
 		BigInt tmp = *this - rBi;
 		*this = tmp;
-		return *this;
 	}
 	friend ostream & operator<< (ostream &out, const BigInt &bi);
 };
