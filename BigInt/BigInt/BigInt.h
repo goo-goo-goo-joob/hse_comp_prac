@@ -59,6 +59,24 @@ public:
 	void setSign(bool b) {
 		sign = b;
 	}
+	BigInt operator=(const BigInt &rBi) {
+		size = rBi.getSize();
+		sign = rBi.getSign();
+		char* stmp = rBi.getValue();
+		delete[] value;
+		value = new char[size];
+		int i = 0;
+		while (i < size) {
+			if (!isdigit(stmp[i])) {
+				throw invalid_argument("received not digit");
+			}
+			else
+				value[i] = stmp[i];
+			i++;
+		}
+		return *this;
+	}
+
 	bool operator<(const BigInt &rBi) const {
 		bool rSign = rBi.getSign();
 		if (sign != rSign)
@@ -81,6 +99,10 @@ public:
 			result = this->value[i] == rBi.value[i];
 		}
 		return result;
+	}
+	BigInt operator-() {
+		sign = !(sign);
+		return *this;
 	}
 	BigInt operator-(const BigInt &rBi) const {
 		bool rSign = rBi.getSign();
@@ -184,6 +206,16 @@ public:
 			tmp.setSign(true);
 			return *this - tmp;
 		}
+	}
+	BigInt operator+=(const BigInt&rBi) {
+		BigInt tmp = *this + rBi;
+		*this = tmp;
+		return *this;
+	}
+	BigInt operator-=(const BigInt&rBi) {
+		BigInt tmp = *this - rBi;
+		*this = tmp;
+		return *this;
 	}
 	friend ostream & operator<< (ostream &out, const BigInt &bi);
 };
