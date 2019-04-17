@@ -1,12 +1,6 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-//стандартную арифметику объектов, включающую арифметические действия (умножение и целочисленное целение)
-//+присваивание
-//+ввод и вывод в стандартные потоки
-//+приведение к базовому типу данных
-//+извлечение и обновление отдельных элементов (изменение отдельных составных частей объекта)
-//+По возможности организовать операции в виде конвейера значений, с результатом(новым объектом) и сохранением значений входных операндов
 #pragma once
 #include <string>
 #include <iostream>
@@ -257,17 +251,16 @@ public:
 		*this = *this + rBi;
 	}
 	void operator-=(const BigInt&rBi) {
-		BigInt tmp = *this - rBi;
-		*this = tmp;
+		*this = *this - rBi;
 	}
-	operator string() {
+	operator string() const {
 		string str = ((string)value).substr(0, size);
 		if (!sign)
 			str.push_back('-');
 		reverse(str.begin(), str.end());
 		return str;
 	}
-	char operator[](int i) {
+	char operator[](int i) const {
 		i = (i % size + size) % size;
 		return value[i];
 	}
@@ -278,14 +271,14 @@ public:
 		else
 			value[pos] = val;
 	}
-	BigInt operator*(BigInt &rBi) {
+	BigInt operator*(const BigInt &rBi) const {
 		if (this->isZero() || rBi.isZero())
 			return BigInt("0");
 		size_t len = size + rBi.size + 1;
 		vector<int> tmp(len, 0);
 		for (int i = 0; i < size; i++)
 			for (int j = 0; j < rBi.size; j++)
-				tmp[i + j /*- 1*/] += (value[i] - '0') * (rBi.value[j] - '0');
+				tmp[i + j] += (value[i] - '0') * (rBi.value[j] - '0');
 		for (int i = 0; i < len - 1; i++)
 		{
 			tmp[i + 1] += tmp[i] / 10;
@@ -293,7 +286,6 @@ public:
 		}
 		while (!tmp[--len])
 			tmp.pop_back();
-
 		ostringstream oss;
 		if (!tmp.empty())
 		{
@@ -306,12 +298,12 @@ public:
 		reverse(str.begin(), str.end());
 		return BigInt(str);
 	}
-	BigInt Abs() {
+	BigInt Abs() const {
 		BigInt tmp(*this);
 		tmp.sign = true;
 		return tmp;
 	}
-	BigInt operator/ (BigInt &rBi) {
+	BigInt operator/ (const BigInt &rBi) const {
 		if (rBi.isZero())
 			throw invalid_argument("alarm! division by zero");
 		else {
@@ -344,6 +336,12 @@ public:
 			}
 			return BigInt(val);
 		}
+	}
+	void operator*=(const BigInt&rBi) {
+		*this = *this * rBi;
+	}
+	void operator/=(const BigInt&rBi) {
+		*this = *this / rBi;
 	}
 	friend ostream & operator<< (ostream &out, const BigInt &bi);
 	friend istream & operator>> (istream &in, BigInt &bi);

@@ -9,9 +9,9 @@ int main() {
 	BigInt bi4("");
 	cout << bi1 << bi2 << bi4 << (bi1 - bi3);
 	try {
-		/*BigInt b1;
+		BigInt b1;
 		cin >> b1;
-		cout << b1;*/
+		cout << b1;
 	}
 	catch (const invalid_argument& e) {
 		cerr << e.what() << endl;
@@ -25,9 +25,8 @@ int main() {
 	catch (const invalid_argument& e) {
 		cerr << e.what() << endl;
 	}
+	bi1(-1, '9');
 	cout << string(bi1) << " " << bi1[0] << " " << bi1[1] << " " << bi1[2] << " " << bi1[3] << endl;
-	cout << (-bi1*bi2);
-
-
+	cout << (-bi1 * bi2) << (bi1 / bi2);
 	return 0;
 }
