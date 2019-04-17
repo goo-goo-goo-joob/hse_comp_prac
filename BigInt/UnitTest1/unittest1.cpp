@@ -81,6 +81,14 @@ namespace UnitTest1
 			Assert::IsTrue(b1 - b2 == b3);
 			Assert::IsTrue(b2 - b1 == -b3);
 		}
+		TEST_METHOD(TestMethodSelf)
+		{
+			BigInt b1("340282366920938463463374607431768211456");
+			BigInt b2("340282366920938463463374607431768211456");
+			BigInt b3("0");
+			Assert::IsTrue(b1 - b2 == b3);
+			Assert::IsTrue(b2 - b1 == -b3);
+		}
 		TEST_METHOD(TestMethodPosNeg)
 		{
 			BigInt b1("170141183460469231731687303715884105728");
@@ -104,6 +112,68 @@ namespace UnitTest1
 			BigInt b3("128667160846894790715675442493073");
 			Assert::IsTrue(b1 - b2 == b3);
 			Assert::IsTrue(b2 - b1 == -b3);
+		}
+
+	};
+	TEST_CLASS(UnitTestMulti)
+	{
+	public:
+
+		TEST_METHOD(TestMethodPosPos)
+		{
+			BigInt b1("100");
+			BigInt b2("100");
+			BigInt b3("10000");
+			Assert::IsTrue(b1 * b2 == b3);
+			Assert::IsTrue(b2 * b1 == b3);
+		}
+
+		TEST_METHOD(TestMethodPosNeg)
+		{
+			BigInt b1("-256597312");
+			BigInt b2("538374");
+			BigInt b3("-138145321250688");
+			Assert::IsTrue(b1 * b2 == b3);
+			Assert::IsTrue(b2 * b1 == b3);
+		}
+
+		TEST_METHOD(TestMethodNegNeg)
+		{
+			BigInt b1("-873456580075675");
+			BigInt b2("-8756756269520732567532963529017014");
+			BigInt b3("7648646383731804838227942798367988825310482534450");
+			Assert::IsTrue(b1 * b2 == b3);
+			Assert::IsTrue(b2 * b1 == b3);
+		}
+
+	};
+
+	TEST_CLASS(UnitTestDiv)
+	{
+	public:
+
+		TEST_METHOD(TestMethodPosPos)
+		{
+			BigInt b1("100");
+			BigInt b2("100");
+			BigInt b3("10000");
+			Assert::IsTrue(b3 / b2 == b1);
+		}
+
+		TEST_METHOD(TestMethodPosNeg)
+		{
+			BigInt b1("256597312");
+			BigInt b2("538374");
+			BigInt b3("138145321250688");
+			Assert::IsTrue(b3 / b2 == b1);
+		}
+
+		TEST_METHOD(TestMethodNegNeg)
+		{
+			BigInt b1("873456580075675");
+			BigInt b2("8756756269520732567532963529017014");
+			BigInt b3("7648646383731804838227942798367988825310482534450");
+			Assert::IsTrue(b3 / b2 == b1);
 		}
 
 	};

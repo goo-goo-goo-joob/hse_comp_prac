@@ -1,10 +1,19 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+
+//стандартную арифметику объектов, включающую арифметические действия (умножение и целочисленное целение)
+//+присваивание
+//+ввод и вывод в стандартные потоки
+//+приведение к базовому типу данных
+//+извлечение и обновление отдельных элементов (изменение отдельных составных частей объекта)
+//+По возможности организовать операции в виде конвейера значений, с результатом(новым объектом) и сохранением значений входных операндов
 #pragma once
-//#include <cstring>
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <vector>
+#include <sstream>
+#include <iterator>
 
 using namespace std;
 
@@ -15,6 +24,11 @@ class BigInt {
 	size_t size;
 	bool sign;//pos - true, neg - false
 public:
+	BigInt() {
+		value = nullptr;
+		size = 0;
+		sign = true;
+	}
 	BigInt(string s) {
 		int i;
 		if (s[0] != '-') {
@@ -27,7 +41,11 @@ public:
 			size = s.length() - 1;
 			i = s.length() - 1;
 		}
-		value = new char[size];
+		value = new char[size + 1];
+		value[size] = 0;
+		for (int i = 0; i < size; i++) {
+			value[i] = 0;
+		}
 		int j = 0;
 		while (j < size) {
 			if (!isdigit(s[i])) {
@@ -41,7 +59,11 @@ public:
 		char* newVal = newInt.getValue();
 		sign = newInt.getSign();
 		size = newInt.getSize();
-		value = new char[size];
+		value = new char[size + 1];
+		value[size] = 0;
+		for (int i = 0; i < size; i++) {
+			value[i] = 0;
+		}
 		memcpy(value, newVal, size * sizeof(char));
 	}
 	~BigInt() {
@@ -64,7 +86,11 @@ public:
 		sign = rBi.sign;
 		char* stmp = rBi.value;
 		delete[] value;
-		value = new char[size];
+		value = new char[size + 1];
+		value[size] = 0;
+		for (int i = 0; i < size; i++) {
+			value[i] = 0;
+		}
 		int i = 0;
 		while (i < size) {
 			if (!isdigit(stmp[i])) {
@@ -95,7 +121,21 @@ public:
 		}
 		return true;
 	}
+	bool operator>(const BigInt &rBi) const {
+		return (*this < rBi || *this == rBi) ? false : true;
+	}
+	bool operator>=(const BigInt &rBi) const {
+		return (*this < rBi) ? false : true;
+	}
+	bool operator<=(const BigInt &rBi) const {
+		return (*this < rBi || *this == rBi) ? true : false;
+	}
+	bool isZero() const {
+		return size == 1 && value[0] == '0';
+	}
 	bool operator==(const BigInt &rBi) const {
+		if (isZero() && rBi.isZero())
+			return true;
 		bool result = sign == rBi.sign && size == rBi.size;
 		for (int i = 0; i < size && result; i++) {
 			result = value[i] == rBi.value[i];
@@ -108,6 +148,8 @@ public:
 	}
 	BigInt operator-(const BigInt &rBi) const {
 		bool rSign = rBi.sign;
+		if (*this == rBi)
+			return BigInt("0");
 		if (sign && rSign) {
 			if (*this < rBi) {
 				BigInt tmp = rBi - *this;
@@ -122,7 +164,7 @@ public:
 				if (i >= rSize) {
 					tmp.push_back(((value[i] - 48) + rem + 20) % 10 + 48);
 					if ((value[i] - 48) + rem < 0)
-						rem = - 1;
+						rem = -1;
 					else {
 						rem = 0;
 					}
@@ -132,7 +174,7 @@ public:
 					char b = value[i];
 					tmp.push_back((-(valBi[i] - 48) + (value[i] - 48) + rem + 20) % 10 + 48);
 					if (-(valBi[i] - 48) + (value[i] - 48) + rem < 0)
-						rem = - 1;
+						rem = -1;
 					else {
 						rem = 0;
 					}
@@ -141,10 +183,10 @@ public:
 			if (rem) {
 				tmp.push_back(abs(rem) + 48);
 			}
-			int i = 0;
+			int i = size - 1;
 			while (tmp[i] == '0') {
 				tmp.pop_back();
-				i++;
+				i--;
 			}
 			reverse(tmp.begin(), tmp.end());
 			return BigInt(tmp);
@@ -212,15 +254,92 @@ public:
 		}
 	}
 	void operator+=(const BigInt&rBi) {
-		BigInt tmp = *this + rBi;
-		*this = tmp;
+		*this = *this + rBi;
 	}
 	void operator-=(const BigInt&rBi) {
 		BigInt tmp = *this - rBi;
 		*this = tmp;
 	}
+	operator string() {
+		string str = ((string)value).substr(0, size);
+		if (!sign)
+			str.push_back('-');
+		reverse(str.begin(), str.end());
+		return str;
+	}
+	char operator[](int i) {
+		i = (i % size + size) % size;
+		return value[i];
+	}
+	void operator()(int pos, char val) {
+		pos = (pos % size + size) % size;
+		if (!isdigit(val))
+			throw invalid_argument("received not digit");
+		else
+			value[pos] = val;
+	}
+	BigInt operator*(BigInt &rBi) {
+		size_t len = size + rBi.size + 1;
+		vector<int> tmp(len, 0);
+		for (int i = 0; i < size; i++)
+			for (int j = 0; j < rBi.size; j++)
+				tmp[i + j /*- 1*/] += (value[i] - '0') * (rBi.value[j] - '0');
+		for (int i = 0; i < len - 1; i++)
+		{
+			tmp[i + 1] += tmp[i] / 10;
+			tmp[i] %= 10;
+		}
+		while (!tmp[--len])
+			tmp.pop_back();
+
+		ostringstream oss;
+		if (!tmp.empty())
+		{
+			copy(tmp.begin(), tmp.end(),
+				std::ostream_iterator<int>(oss));
+		}
+		string str = oss.str();
+		if (sign != rBi.sign)
+			str.push_back('-');
+		reverse(str.begin(), str.end());
+		return BigInt(str);
+	}
+
+	BigInt operator/ (BigInt &rBi) {
+		if (*this < rBi)
+			return BigInt("0");
+		string sup = ((string)*this).substr(0, rBi.size);
+		BigInt tmp(sup);
+		string val("");
+		for (int i = size - rBi.size; i >= 0; i--) {
+			int j = 0;
+			while (rBi <= tmp ) {
+				tmp -= rBi;
+				j++;
+			}
+			if (j != 0 || i != size - rBi.size)
+				val.push_back(char(j) + '0');
+			if (i) {
+				string str = (string)tmp;
+				str.push_back(value[i - 1]);
+				BigInt tmp1(str);
+				tmp = tmp1;
+			}
+		}
+		return val;
+	}
 	friend ostream & operator<< (ostream &out, const BigInt &bi);
+	friend istream & operator>> (istream &in, BigInt &bi);
 };
+
+istream& operator >> (istream& in, BigInt & bi)
+{
+	string s;
+	getline(in, s);
+	BigInt tmp(s);
+	bi = tmp;
+	return in;
+}
 
 ostream & operator << (ostream &out, const BigInt &bi)
 {
