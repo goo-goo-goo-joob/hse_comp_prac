@@ -18,7 +18,9 @@ int main() {
 	}
 	cout << string(bi1) << " " << bi1[0] << " " << bi1[1] << " " << bi1[2] << " " << bi1[3] << endl;
 	try {
-		bi1(0, '9');
+		BigInt a("-10000");
+		BigInt b("0");
+		cout << a / b;
 	}
 	catch (const invalid_argument& e) {
 		cerr << e.what() << endl;
@@ -26,8 +28,6 @@ int main() {
 	cout << string(bi1) << " " << bi1[0] << " " << bi1[1] << " " << bi1[2] << " " << bi1[3] << endl;
 	cout << (-bi1*bi2);
 
-	BigInt a("293475");
-	BigInt b("274");
-	cout << a / b;
+
 	return 0;
 }

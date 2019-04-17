@@ -279,6 +279,8 @@ public:
 			value[pos] = val;
 	}
 	BigInt operator*(BigInt &rBi) {
+		if (this->isZero() || rBi.isZero())
+			return BigInt("0");
 		size_t len = size + rBi.size + 1;
 		vector<int> tmp(len, 0);
 		for (int i = 0; i < size; i++)
@@ -304,29 +306,44 @@ public:
 		reverse(str.begin(), str.end());
 		return BigInt(str);
 	}
-
+	BigInt Abs() {
+		BigInt tmp(*this);
+		tmp.sign = true;
+		return tmp;
+	}
 	BigInt operator/ (BigInt &rBi) {
-		if (*this < rBi)
-			return BigInt("0");
-		string sup = ((string)*this).substr(0, rBi.size);
-		BigInt tmp(sup);
-		string val("");
-		for (int i = size - rBi.size; i >= 0; i--) {
-			int j = 0;
-			while (rBi <= tmp ) {
-				tmp -= rBi;
-				j++;
+		if (rBi.isZero())
+			throw invalid_argument("alarm! division by zero");
+		else {
+			if (this->Abs() < rBi.Abs())
+				return BigInt("0");
+			string sup = ((string)*this).substr(int(!sign), rBi.size);
+			BigInt tmp(sup);
+			string val("");
+			if (sign != rBi.sign)
+				val.push_back('-');
+			for (int i = size - rBi.size; i >= 0; i--) {
+				int j = 0;
+				while (rBi.Abs() <= tmp.Abs()) {
+					tmp -= rBi.Abs();
+					j++;
+				}
+				if (j != 0 || i != size - rBi.size)
+					val.push_back(char(j) + '0');
+				if (i) {
+					string str("");
+					if (tmp.isZero())
+						str = value[i - 1];
+					else {
+						str = (string)tmp;
+						str.push_back(value[i - 1]);
+					}
+					BigInt tmp1(str);
+					tmp = tmp1;
+				}
 			}
-			if (j != 0 || i != size - rBi.size)
-				val.push_back(char(j) + '0');
-			if (i) {
-				string str = (string)tmp;
-				str.push_back(value[i - 1]);
-				BigInt tmp1(str);
-				tmp = tmp1;
-			}
+			return BigInt(val);
 		}
-		return val;
 	}
 	friend ostream & operator<< (ostream &out, const BigInt &bi);
 	friend istream & operator>> (istream &in, BigInt &bi);
