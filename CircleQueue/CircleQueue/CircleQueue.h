@@ -82,7 +82,7 @@ public:
 		throw exception("index out of range exception");
 	}
 	void sort() {
-		for (size_t i = 0; i < size - 1; i++)  
+		for (size_t i = 0; i < size - 1; i++)
 			for (size_t j = 0; j < size - i - 1; j++)
 				if (values[j] > values[j + 1])
 				{
@@ -99,9 +99,14 @@ public:
 	}
 	friend istream & operator>> (istream &in, CircleQueue<T> &cq) {
 		{
-			string s;
-			getline(in, s);
-
+			while (cq.cap != cq.size && !in.eof() && !in.fail())
+			{
+				T tmp;
+				in >> tmp;
+				if (!in.eof() && !in.fail()) {
+					cq.pushBack(tmp);
+				}
+			}
 			return in;
 		}
 	}
