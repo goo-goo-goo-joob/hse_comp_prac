@@ -5,16 +5,13 @@
 
 int main() {
 	const int cap = 10;
-	const int extra_read = 5;
-	CircleQueue<int> q(cap);
-	int thrown = 0;
-	for (int i = 0; i < cap + extra_read; i++) {
-		try {
-			q.pushBack(0);
-		}
-		catch (const exception& e) {
-			thrown++;
-		}
+	CircleQueue<int> q(cap + 1);
+	q.pushBack(42);
+	for (int i = 0; i < cap; i++) {
+		q.insert(i, 0);
 	}
+	//q.pop(0);
+	//q.insert(112, 1);
+	cout << q;
 	return 0;
 }

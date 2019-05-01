@@ -27,6 +27,22 @@ namespace CicrleQueueTest
 			}
 			Assert::AreEqual(thrown, extra_read);
 		}
+		TEST_METHOD(TestMethodInsert)
+		{
+			const int cap = 10;
+			const int extra_read = 5;
+			CircleQueue<int> q(cap);
+			int thrown = 0;
+			for (int i = 0; i < cap + extra_read; i++) {
+				try {
+					q.insert(111, 0);
+				}
+				catch (const exception& e) {
+					thrown++;
+				}
+			}
+			Assert::AreEqual(thrown, extra_read);
+		}
 		TEST_METHOD(TestMethodReadForward)
 		{
 			const int cap = 10;
