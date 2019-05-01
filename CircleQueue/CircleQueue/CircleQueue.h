@@ -50,17 +50,18 @@ public:
 			incHead();
 			size++;
 		}
+		else
+			throw exception("queue is full");
 	}
 	T pop(size_t pos) {
 		if (pos < size) {
 			T* tmp = values[toIndex(pos)];
-			for (size_t i = pos; i < size; i++) {
+			for (size_t i = pos; i < size - 1; i++) {
 				values[toIndex(i)] = values[toIndex(i + 1)];
 			}
-			values[toIndex(size)] = tmp;
+			values[toIndex(size - 1)] = tmp;
 			T result = *tmp;
-			deleteAt(toIndex(size));
-			//incTail();
+			deleteAt(toIndex(size - 1));
 			return result;
 		}
 		throw exception("index out of range exception");
