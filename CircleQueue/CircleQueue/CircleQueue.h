@@ -2,7 +2,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 #pragma once
 #include <iostream>
-#include <sstream>
 using namespace std;
 
 template <typename T>
@@ -57,7 +56,7 @@ public:
 	void insert(T elm, size_t pos) {
 		if (size >= cap)
 			throw exception("queue is full");
-		if (pos >= size)
+		if (pos > size)
 			throw exception("position out of range");
 		T* tmp = new T;
 		*tmp = elm;
@@ -84,7 +83,7 @@ public:
 	void sort() {
 		for (size_t i = 0; i < size - 1; i++)
 			for (size_t j = 0; j < size - i - 1; j++)
-				if (values[j] > values[j + 1])
+				if (*values[j] > *values[j + 1])
 				{
 					T* tmp = values[j];
 					values[j] = values[j + 1];

@@ -65,5 +65,20 @@ namespace CicrleQueueTest
 				Assert::AreEqual(q.pop(i), i);
 			}
 		}
+		TEST_METHOD(TestMethodSort)
+		{
+			const int cap = 10;
+			CircleQueue<int> q(cap);
+			for (int i = 0; i < cap; i++) {
+				q.pushBack(rand());
+			}
+			q.sort();
+			int el = q.pop(0);
+			for (int i = 0; i < cap - 1; i++) {
+				int n = q.pop(0);
+				Assert::IsTrue(n > el);
+				el = n;
+			}
+		}
 	};
 }
