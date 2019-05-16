@@ -4,69 +4,111 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-
+#include "ADT_types.h"
 using namespace std;
 
 class ADT {
 public:
-	ADT();
-	virtual ADT operator=(const ADT &rADT);
-	virtual ~ADT();
-	virtual bool isZero() const;
-	virtual bool operator==(const ADT &rBi) const;
-	virtual bool operator<(const ADT &rADT) const;
-	virtual bool operator<=(const ADT &rADT) const;
-	virtual bool operator>(const ADT &rADT) const;
-	virtual bool operator>=(const ADT &rADT) const;
-	friend ostream & operator<< (ostream &out, const ADT &adt);
-	friend istream & operator>> (istream &in, ADT &adt);
+	ADT() {};
+	//virtual ADT operator=(const ADT &rADT);
+	virtual ~ADT() {};
+	virtual bool operator==(const ADT &rBi) const = 0;
+	virtual bool operator<(const ADT &rADT) const = 0;
+	virtual bool operator<=(const ADT &rADT) const = 0;
+	virtual bool operator>(const ADT &rADT) const = 0;
+	virtual bool operator>=(const ADT &rADT) const = 0;
+	virtual ItemKind GetKind() const = 0;
+	virtual void print(ostream& out) const = 0;
+	friend ostream & operator<< (ostream &out, const ADT &adt)
+	{
+		adt.print(out);
+		return out;
+	}
+	//friend istream & operator>> (istream &in, ADT &adt);
 };
 
-class Data : public ADT {
+class Date : public ADT {
 	size_t day;
 	size_t month;
 	size_t year;
+	static bool toDerived(const ADT* obj, Date * target = nullptr)
+	{
+		if (obj->GetKind() != ItemKind::ITEM_DATE) {
+			return false;
+		}
+		if (target)
+			target = (Date*)obj;
+		return true;
+	}
 public:
-	Data() {
+	Date() {
 		day = 0;
 		month = 0;
 		year = 0;
 	}
-	Data(size_t d, size_t m, size_t y) : day(d), month(m), year(y) {}
-	Data operator=(const Data &rD) {
+	Date(size_t d, size_t m, size_t y) : day(d), month(m), year(y) {}
+	Date operator=(const Date &rD) {
 		day = rD.day;
 		month = rD.month;
 		year = rD.year;
 		return *this;
 	}
-	~Data() {}
-	bool operator==(const Data &rD) const {
-		return day == rD.day && month == rD.month && year == rD.year;
+	~Date() {}
+	bool operator==(const ADT &rD) const override {
+		Date obj;
+		if (!toDerived(&rD, &obj)) {
+			return false;
+		}
+		return day == obj.day && month == obj.month && year == obj.year;
 	}
-	bool operator<(const Data &rADT) const {
-		if (year > rADT.year)
+	bool operator<(const ADT &rD) const override {
+		Date obj;
+		if (!toDerived(&rD, &obj)) {
 			return false;
-		if (month > rADT.month)
+		}
+		if (year > obj.year)
 			return false;
-		if (day >= rADT.day)
+		if (month > obj.month)
+			return false;
+		if (day >= obj.day)
 			return false;
 		else
 			return true;
 	}
-	bool operator>(const Data &rD) const {
-		return (*this < rD || *this == rD) ? false : true;
+	bool operator>(const ADT &rD) const override {
+		if (!toDerived(&rD)) {
+			return false;
+		}
+		return !(*this < rD || *this == rD);
 	}
-	bool operator>=(const Data &rD) const {
-		return (*this < rD) ? false : true;
+	bool operator>=(const ADT &rD) const override {
+		if (!toDerived(&rD)) {
+			return false;
+		}
+		return !(*this < rD);
 	}
-	bool operator<=(const Data &rD) const {
-		return (*this < rD || *this == rD) ? true : false;
+	bool operator<=(const ADT &rD) const override {
+		if (!toDerived(&rD)) {
+			return false;
+		}
+		return *this < rD || *this == rD;
 	}
-	friend ostream & operator<< (ostream &out, const Data &d);
-	friend istream & operator>> (istream &in, Data &d);
+	friend ostream & operator<< (ostream &out, const Date &d);
+	friend istream & operator>> (istream &in, Date &d);
+
+	virtual ItemKind GetKind() const override
+	{
+		return ItemKind::ITEM_DATE;
+	}
+
+	virtual void print(ostream & out) const override
+	{
+
+	}
+
 };
 
-istream & operator >> (istream & in, Data & dt)
+istream & operator >> (istream & in, Date & dt)
 {
 	string s;
 	getline(in, s);
@@ -75,12 +117,12 @@ istream & operator >> (istream & in, Data & dt)
 	size_t m = stoi(s);
 	getline(in, s);
 	size_t y = stoi(s);
-	Data tmp(d, m, y);
+	Date tmp(d, m, y);
 	dt = tmp;
 	return in;
 }
 
-ostream & operator << (ostream & out, const Data & d)
+ostream & operator << (ostream & out, const Date & d)
 {
 	out << d.day << "." << d.month << "." << d.year << endl;
 	return out;

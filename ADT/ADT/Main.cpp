@@ -3,10 +3,11 @@
 #include "ADT.h"
 
 int main() {
-	Data d(3, 8, 1999);
+	Date d(3, 8, 1999);
 	cout << d;
-	Data d1;
-	cin >> d1;
+	Date d1(3, 8, 2000);
+	//cin >> d1;
 	cout << (d > d1);
+	cout << (d < d1);
 	return 0;
 }
