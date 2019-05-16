@@ -340,3 +340,5 @@ BigInt/Отчет/main\.pdf
 *.aux
 
 CircleQueue/Отчет/main\.pdf
+
+*.sln
