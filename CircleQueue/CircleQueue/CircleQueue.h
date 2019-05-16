@@ -11,6 +11,7 @@ class CircleQueue {
 	T** values;
 	size_t head;
 	size_t tail;
+	bool sorted;
 	size_t toIndex(size_t i) {
 		return (i + tail) % cap;
 	}
@@ -35,6 +36,7 @@ public:
 		size = 0;
 		tail = 0;
 		cap = capacity;
+		sorted = false;
 	}
 	~CircleQueue() {
 		for (size_t i = 0; i < cap; i++) {
@@ -49,6 +51,7 @@ public:
 			values[head] = tmp;
 			incHead();
 			size++;
+			sorted = false;
 		}
 		else
 			throw exception("queue is full");
@@ -66,6 +69,7 @@ public:
 		values[pos] = tmp;
 		incHead();
 		size++;
+		sorted = false;
 	}
 	T pop(size_t pos) {
 		if (pos < size) {
@@ -89,6 +93,7 @@ public:
 					values[j] = values[j + 1];
 					values[j + 1] = tmp;
 				}
+		sorted = true;
 	}
 	friend ostream & operator<< (ostream &out, const CircleQueue<T> &cq) {
 		for (size_t i = 0; i < cq.size; i++)
@@ -109,6 +114,20 @@ public:
 			return in;
 		}
 	}
-	//void Push&Sort
+	void PushSort(T elm) {
+		if (size >= cap)
+			throw exception("queue is full");
+		if (!sorted) {
+			pushBack(elm);
+			sort();
+		}
+		else {
+			size_t i = 0;
+			while (elm < *values[i])
+				i++;
+			insert(elm, i);
+			sorted = true;
+		}
+	}
 };
 

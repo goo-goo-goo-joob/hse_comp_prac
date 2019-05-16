@@ -8,6 +8,12 @@ int main() {
 	CircleQueue<int> q(cap + 1);
 	q.pushBack(42);
 	cin >> q;
+	try {
+		q.PushSort(11);
+	}
+	catch (const exception& e) {
+		cerr << e.what() << endl;
+	}
 	cout << q;
 	return 0;
 }
