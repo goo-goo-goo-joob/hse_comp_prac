@@ -103,7 +103,7 @@ public:
 
 	virtual void print(ostream & out) const override
 	{
-
+		out << "Date: " << this->year << "." << this->month << "." << this->day << endl;
 	}
 
 };
@@ -124,6 +124,6 @@ istream & operator >> (istream & in, Date & dt)
 
 ostream & operator << (ostream & out, const Date & d)
 {
-	out << d.day << "." << d.month << "." << d.year << endl;
+	d.print(out);
 	return out;
 }
