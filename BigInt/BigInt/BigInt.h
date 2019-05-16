@@ -2,6 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 #pragma once
+#include "../../ADT/ADT/ADT.h"
 #include <string>
 #include <iostream>
 #include <algorithm>
@@ -13,10 +14,19 @@ using namespace std;
 
 const int base = 10;
 
-class BigInt {
+class BigInt: public ADT {
 	char* value;//дес€ична€ система счислени€ дл€ записи каждого символа-цифры
 	size_t size;
 	bool sign;//pos - true, neg - false
+	static bool toDerived(const ADT* obj, BigInt ** target = nullptr)
+	{
+		if (obj->GetKind() != ItemKind::ITEM_BIGINT) {
+			return false;
+		}
+		if (target)
+			*target = (BigInt*)obj;
+		return true;
+	}
 public:
 	BigInt() {
 		value = nullptr;
@@ -97,14 +107,18 @@ public:
 		return *this;
 	}
 
-	bool operator<(const BigInt &rBi) const {
-		bool rSign = rBi.sign;
+	bool operator<(const ADT &rBi) const override {
+		BigInt* obj;
+		if (!toDerived(&rBi, &obj)) {
+			return false;
+		}
+		bool rSign = obj->sign;
 		if (sign != rSign)
 			return sign == true ? true : false;
-		unsigned int rSize = rBi.size;
+		unsigned int rSize = obj->size;
 		if (size != rSize)
 			return size < rSize;
-		char* valBi = rBi.value;
+		char* valBi = obj->value;
 		int i = size - 1;
 		while (i >= 0) {
 			if (value[i] > valBi[i])
@@ -115,26 +129,46 @@ public:
 		}
 		return true;
 	}
-	bool operator>(const BigInt &rBi) const {
-		return (*this < rBi || *this == rBi) ? false : true;
+	bool operator>(const ADT &rBi) const override {
+		if (!toDerived(&rBi)) {
+			return false;
+		}
+		return !(*this < rBi || *this == rBi);
 	}
-	bool operator>=(const BigInt &rBi) const {
-		return (*this < rBi) ? false : true;
+	bool operator>=(const ADT &rBi) const override {
+		if (!toDerived(&rBi)) {
+			return false;
+		}
+		return !(*this < rBi);
 	}
-	bool operator<=(const BigInt &rBi) const {
-		return (*this < rBi || *this == rBi) ? true : false;
+	bool operator<=(const ADT &rBi) const override {
+		if (!toDerived(&rBi)) {
+			return false;
+		}
+		return *this < rBi || *this == rBi;
 	}
 	bool isZero() const {
 		return size == 1 && value[0] == '0';
 	}
-	bool operator==(const BigInt &rBi) const {
-		if (isZero() && rBi.isZero())
+	bool operator==(const ADT &rBi) const override {
+		BigInt* obj;
+		if (!toDerived(&rBi, &obj)) {
+			return false;
+		}
+		if (isZero() && obj->isZero())
 			return true;
-		bool result = sign == rBi.sign && size == rBi.size;
+		bool result = sign == obj->sign && size == obj->size;
 		for (int i = 0; i < size && result; i++) {
-			result = value[i] == rBi.value[i];
+			result = value[i] == obj->value[i];
 		}
 		return result;
+	}
+	bool operator!=(const ADT &rD) const override {
+		BigInt* obj;
+		if (!toDerived(&rD, &obj)) {
+			return false;
+		}
+		return !(*this == rD);
 	}
 	BigInt operator-() {
 		sign = !(sign);
@@ -345,25 +379,39 @@ public:
 	}
 	friend ostream & operator<< (ostream &out, const BigInt &bi);
 	friend istream & operator>> (istream &in, BigInt &bi);
+
+	virtual ItemKind GetKind() const override
+	{
+		return ItemKind::ITEM_BIGINT;
+	}
+
+	virtual void print(ostream & out) const override
+	{
+		if (!sign) {
+			out << "-";
+		}
+		for (int i = size - 1; i >= 0; i--)
+			out << value[i];
+		out << endl;
+	}
+
+	virtual void scan(istream & in) override
+	{
+		string s;
+		getline(in, s);
+		BigInt tmp(s);
+		*this = tmp;
+	}
 };
 
 istream& operator >> (istream& in, BigInt & bi)
 {
-	string s;
-	getline(in, s);
-	BigInt tmp(s);
-	bi = tmp;
+	bi.scan(in);
 	return in;
 }
 
 ostream & operator << (ostream &out, const BigInt &bi)
 {
-	char* val = bi.getValue();
-	if (!bi.getSign()) {
-		out << "-";
-	}
-	for (int i = bi.getSize() - 1; i >= 0; i--)
-		out << val[i];
-	out << endl;
+	bi.print(out);
 	return out;
 }
