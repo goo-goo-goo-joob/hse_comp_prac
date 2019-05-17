@@ -9,6 +9,9 @@
 
 // Заголовки CppUnitTest
 #include "CppUnitTest.h"
+#include "../CircleQueue/CircleQueue.h"
+#include "../../BigInt/BigInt/BigInt.h"
+#include "../../ADT/ADT/ADT.h"
+#include "../../ADT/ADT/Date.h"
 
 // TODO: Установите здесь ссылки на дополнительные заголовки, требующиеся для программы
-#include "../CircleQueue/CircleQueue.h"

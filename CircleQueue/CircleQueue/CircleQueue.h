@@ -2,13 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 #pragma once
 #include <iostream>
+#include "../../ADT/ADT/ADT.h"
 using namespace std;
 
-template <typename T>
+//template <typename T>
 class CircleQueue {
 	size_t size;
 	size_t cap;
-	T** values;
+	ADT** values;
 	size_t head;
 	size_t tail;
 	bool sorted;
@@ -28,7 +29,7 @@ class CircleQueue {
 	}
 public:
 	CircleQueue(size_t capacity) {
-		values = new T*[capacity];
+		values = new ADT*[capacity];
 		for (size_t i = 0; i < capacity; i++) {
 			values[i] = nullptr;
 		}
@@ -44,10 +45,11 @@ public:
 		}
 		delete[] values;
 	}
-	void pushBack(T elm) {
+	void pushBack(ADT* elm) {
 		if (size < cap) {
-			T* tmp = new T;
-			*tmp = elm;
+			//ADT* tmp = new ADT;
+			//*tmp = elm;
+			ADT* tmp = elm;
 			values[head] = tmp;
 			incHead();
 			size++;
@@ -56,13 +58,12 @@ public:
 		else
 			throw exception("queue is full");
 	}
-	void insert(T elm, size_t pos) {
+	void insert(ADT* elm, size_t pos) {
 		if (size >= cap)
 			throw exception("queue is full");
 		if (pos > size)
 			throw exception("position out of range");
-		T* tmp = new T;
-		*tmp = elm;
+		ADT* tmp = elm;
 		for (size_t i = size; i > pos; i--) {
 			values[toIndex(i)] = values[toIndex(i - 1)];
 		}
@@ -71,14 +72,14 @@ public:
 		size++;
 		sorted = false;
 	}
-	T pop(size_t pos) {
+	ADT* pop(size_t pos) {
 		if (pos < size) {
-			T* tmp = values[toIndex(pos)];
+			ADT* tmp = values[toIndex(pos)];
 			for (size_t i = pos; i < size - 1; i++) {
 				values[toIndex(i)] = values[toIndex(i + 1)];
 			}
 			values[toIndex(size - 1)] = tmp;
-			T result = *tmp;
+			ADT* result = tmp;
 			deleteAt(toIndex(size - 1));
 			return result;
 		}
@@ -89,24 +90,24 @@ public:
 			for (size_t j = 0; j < size - i - 1; j++)
 				if (*values[j] > *values[j + 1])
 				{
-					T* tmp = values[j];
+					ADT* tmp = values[j];
 					values[j] = values[j + 1];
 					values[j + 1] = tmp;
 				}
 		sorted = true;
 	}
-	friend ostream & operator<< (ostream &out, const CircleQueue<T> &cq) {
+	friend ostream & operator<< (ostream &out, const CircleQueue &cq) {
 		for (size_t i = 0; i < cq.size; i++)
 			out << *cq.values[i] << " ";
 		out << endl;
 		return out;
 	}
-	friend istream & operator>> (istream &in, CircleQueue<T> &cq) {
+	friend istream & operator>> (istream &in, CircleQueue &cq) {
 		{
 			while (cq.cap != cq.size && !in.eof() && !in.fail())
 			{
-				T tmp;
-				in >> tmp;
+				ADT *tmp = nullptr;
+				in >> *tmp;
 				if (!in.eof() && !in.fail()) {
 					cq.pushBack(tmp);
 				}
@@ -114,7 +115,7 @@ public:
 			return in;
 		}
 	}
-	void PushSort(T elm) {
+	void PushSort(ADT* elm) {
 		if (size >= cap)
 			throw exception("queue is full");
 		if (!sorted) {
@@ -123,7 +124,7 @@ public:
 		}
 		else {
 			size_t i = 0;
-			while (elm < *values[i])
+			while (*elm < *values[i])
 				i++;
 			insert(elm, i);
 			sorted = true;

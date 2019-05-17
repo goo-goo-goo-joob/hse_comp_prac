@@ -1,10 +1,12 @@
 #pragma once
 #include "ADT.h"
+#include <vector>
+#pragma warning(disable: 4996)
 
 class Date : public ADT {
-	size_t day;
-	size_t month;
-	size_t year;
+	unsigned int day;
+	unsigned int month;
+	unsigned int year;
 	static bool toDerived(const ADT* obj, Date ** target = nullptr)
 	{
 		if (obj->GetKind() != ItemKind::ITEM_DATE) {
@@ -20,7 +22,21 @@ public:
 		month = 0;
 		year = 0;
 	}
-	Date(size_t d, size_t m, size_t y) : day(d), month(m), year(y) {}
+	Date(unsigned int d, unsigned int m, unsigned int y) : day(d), month(m), year(y) {
+		month = (month % 13 + 13) % 13;
+		if (month == 2 && (y % 4 != 0 || y % 100 == 0 && y % 400 != 0)) {
+			day = (day % 29 + 29) % 29;
+		}
+		else if (month == 2) {
+			day = (day % 30 + 30) % 30;
+		}
+		else if (month == 4 || month == 6 || month == 9 || month == 11) {
+			day = (day % 31 + 31) % 31;
+		}
+		else {
+			day = (day % 32 + 32) % 32;
+		}
+	}
 	Date operator=(const Date &rD) {
 		day = rD.day;
 		month = rD.month;
@@ -84,18 +100,28 @@ public:
 
 	virtual void print(ostream & out) const override
 	{
-		out << "Date: " << this->year << "." << this->month << "." << this->day << endl;
+		out << "Date: " << this->year << "." << this->month << "." << this->day;
 	}
 
 	virtual void scan(istream & in) override
 	{
+		vector<string> strings;
+		string input;
+		getline(in, input);
+		istringstream f(input);
 		string s;
-		getline(in, s);
-		day = stoi(s);
-		getline(in, s);
-		month = stoi(s);
-		getline(in, s);
-		year = stoi(s);
+		while (getline(f, s, '.')) {
+			strings.push_back(s);
+		}
+		if (strings[0][0] == '0')
+			day = strings[0][1] - '0';
+		else
+			day = stoi(strings[0]);
+		if (strings[1][0] == '0')
+			month = strings[1][1] - '0';
+		else
+			month = stoi(strings[1]);
+		year = stoi(strings[2]);
 	}
 
 };

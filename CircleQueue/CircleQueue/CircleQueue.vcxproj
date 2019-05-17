@@ -118,6 +118,9 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\ADT\ADT\ADT.h" />
+    <ClInclude Include="..\..\ADT\ADT\Date.h" />
+    <ClInclude Include="..\..\BigInt\BigInt\BigInt.h" />
     <ClInclude Include="CircleQueue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
