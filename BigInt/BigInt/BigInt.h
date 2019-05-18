@@ -27,6 +27,23 @@ class BigInt: public ADT {
 			*target = (BigInt*)obj;
 		return true;
 	}
+	virtual void print(ostream & out) const override
+	{
+		if (!sign) {
+			out << "-";
+		}
+		for (int i = size - 1; i >= 0; i--)
+			out << value[i];
+		out << endl;
+	}
+
+	virtual void scan(istream & in) override
+	{
+		string s;
+		getline(in, s);
+		BigInt tmp(s);
+		*this = tmp;
+	}
 public:
 	BigInt() {
 		value = nullptr;
@@ -383,24 +400,6 @@ public:
 	virtual ItemKind GetKind() const override
 	{
 		return ItemKind::ITEM_BIGINT;
-	}
-
-	virtual void print(ostream & out) const override
-	{
-		if (!sign) {
-			out << "-";
-		}
-		for (int i = size - 1; i >= 0; i--)
-			out << value[i];
-		out << endl;
-	}
-
-	virtual void scan(istream & in) override
-	{
-		string s;
-		getline(in, s);
-		BigInt tmp(s);
-		*this = tmp;
 	}
 };
 

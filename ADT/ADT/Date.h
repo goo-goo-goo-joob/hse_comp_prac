@@ -16,6 +16,31 @@ class Date : public ADT {
 			*target = (Date*)obj;
 		return true;
 	}
+	virtual void print(ostream & out) const override
+	{
+		out << "Date: " << this->year << "." << this->month << "." << this->day;
+	}
+
+	virtual void scan(istream & in) override
+	{
+		vector<string> strings;
+		string input;
+		getline(in, input);
+		istringstream f(input);
+		string s;
+		while (getline(f, s, '.')) {
+			strings.push_back(s);
+		}
+		if (strings[0][0] == '0')
+			day = strings[0][1] - '0';
+		else
+			day = stoi(strings[0]);
+		if (strings[1][0] == '0')
+			month = strings[1][1] - '0';
+		else
+			month = stoi(strings[1]);
+		year = stoi(strings[2]);
+	}
 public:
 	Date() {
 		day = 0;
@@ -97,33 +122,6 @@ public:
 	{
 		return ItemKind::ITEM_DATE;
 	}
-
-	virtual void print(ostream & out) const override
-	{
-		out << "Date: " << this->year << "." << this->month << "." << this->day;
-	}
-
-	virtual void scan(istream & in) override
-	{
-		vector<string> strings;
-		string input;
-		getline(in, input);
-		istringstream f(input);
-		string s;
-		while (getline(f, s, '.')) {
-			strings.push_back(s);
-		}
-		if (strings[0][0] == '0')
-			day = strings[0][1] - '0';
-		else
-			day = stoi(strings[0]);
-		if (strings[1][0] == '0')
-			month = strings[1][1] - '0';
-		else
-			month = stoi(strings[1]);
-		year = stoi(strings[2]);
-	}
-
 };
 
 istream & operator >> (istream & in, Date & dt)

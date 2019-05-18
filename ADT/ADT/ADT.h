@@ -8,6 +8,8 @@
 using namespace std;
 
 class ADT {
+	virtual void print(ostream& out) const = 0;
+	virtual void scan(istream& in) = 0;
 public:
 	ADT() {};
 	//virtual ADT operator=(const ADT &rADT);
@@ -19,8 +21,6 @@ public:
 	virtual bool operator>(const ADT &rADT) const = 0;
 	virtual bool operator>=(const ADT &rADT) const = 0;
 	virtual ItemKind GetKind() const = 0;
-	virtual void print(ostream& out) const = 0;
-	virtual void scan(istream& in) = 0;
 	friend ostream & operator<< (ostream &out, const ADT &adt)
 	{
 		adt.print(out);
