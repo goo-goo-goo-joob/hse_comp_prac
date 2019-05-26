@@ -21,7 +21,14 @@ int main() {
 	//	cerr << e.what() << endl;
 	//}
 	//cout << q;
+	//ADT* d1;
+	//{
+	//	Date dt(19, 9, 1958);
+	//	d1 = dt.CoPy();
+	//}
 
+	//ADT* d2 = d1->CoPy();
+	//delete d1;
 	for (int it = 0; it < 1000; it++)
 	{
 		const int cap = 10;

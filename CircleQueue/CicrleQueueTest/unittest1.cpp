@@ -55,8 +55,8 @@ namespace CicrleQueueTest
 				q.insert(&BigInt(to_string(i)), 0);
 			}
 			for (int i = 0; i < cap; i++) {
-				auto l = (BigInt*)q.pop(0);
-				auto r = &BigInt(to_string(i));
+				BigInt l = *(BigInt*)q.pop(0);
+				BigInt r = BigInt(to_string(cap - i - 1));
 				Assert::IsTrue(l == r);
 			}
 		}

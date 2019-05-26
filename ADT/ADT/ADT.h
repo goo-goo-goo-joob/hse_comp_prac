@@ -21,6 +21,7 @@ public:
 	virtual bool operator>(const ADT &rADT) const = 0;
 	virtual bool operator>=(const ADT &rADT) const = 0;
 	virtual ItemKind GetKind() const = 0;
+	virtual ADT* CoPy() = 0;
 	friend ostream & operator<< (ostream &out, const ADT &adt)
 	{
 		adt.print(out);

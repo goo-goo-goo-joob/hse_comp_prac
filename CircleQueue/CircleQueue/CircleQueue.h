@@ -51,7 +51,7 @@ public:
 		if (size < cap) {
 			//ADT* tmp = new ADT;
 			//*tmp = elm;
-			ADT* tmp = elm;
+			ADT* tmp = elm->CoPy();
 			values[head] = tmp;
 			incHead();
 			size++;
@@ -65,7 +65,7 @@ public:
 			throw exception("queue is full");
 		if (pos > size)
 			throw exception("position out of range");
-		ADT* tmp = elm;
+		ADT* tmp = elm->CoPy();
 		for (size_t i = size; i > pos; i--) {
 			values[toIndex(i)] = values[toIndex(i - 1)];
 		}
@@ -81,8 +81,9 @@ public:
 				values[toIndex(i)] = values[toIndex(i + 1)];
 			}
 			values[toIndex(size - 1)] = tmp;
-			ADT* result = tmp;
+			ADT* result = tmp->CoPy();
 			deleteAt(toIndex(size - 1));
+			//delete &tmp;
 			return result;
 		}
 		throw exception("index out of range exception");

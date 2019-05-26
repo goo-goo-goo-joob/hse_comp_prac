@@ -91,6 +91,10 @@ public:
 		}
 		memcpy(value, newVal, size * sizeof(char));
 	}
+	ADT* CoPy() override
+	{
+		return (new BigInt(this));
+	}
 	~BigInt() {
 		delete[] value;
 	}
