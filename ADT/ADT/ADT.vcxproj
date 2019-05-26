@@ -116,6 +116,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ADT.h" />
+    <ClInclude Include="ADT_types.h" />
+    <ClInclude Include="Date.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />

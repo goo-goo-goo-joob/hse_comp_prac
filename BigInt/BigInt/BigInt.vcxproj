@@ -115,6 +115,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\ADT\ADT\ADT.h" />
     <ClInclude Include="BigInt.h" />
   </ItemGroup>
   <ItemGroup>

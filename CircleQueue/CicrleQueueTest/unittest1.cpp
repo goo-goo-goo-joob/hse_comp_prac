@@ -3,25 +3,27 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "../CircleQueue/CircleQueue.h"
+
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace CicrleQueueTest
-{		
+{
 	TEST_CLASS(UnitTest1)
 	{
 	public:
-		
+
 		TEST_METHOD(TestMethodPushBack)
 		{
 			const int cap = 10;
 			const int extra_read = 5;
-			CircleQueue<int> q(cap);
+			CircleQueue q(cap);
 			int thrown = 0;
+			BigInt bi("123832892108");
 			for (int i = 0; i < cap + extra_read; i++) {
 				try {
-					q.pushBack(0);
+					q.pushBack(&bi);
 				}
-				catch (const exception& e) {
+				catch (const exception&) {
 					thrown++;
 				}
 			}
@@ -31,30 +33,34 @@ namespace CicrleQueueTest
 		{
 			const int cap = 10;
 			const int extra_read = 5;
-			CircleQueue<int> q(cap);
+			CircleQueue q(cap);
 			int thrown = 0;
+			Date dt(19, 9, 1958);
 			for (int i = 0; i < cap + extra_read; i++) {
 				try {
-					q.insert(111, 0);
+					q.insert(&dt, 0);
 				}
-				catch (const exception& e) {
+				catch (const exception&) {
 					thrown++;
 				}
 			}
 			Assert::AreEqual(thrown, extra_read);
 		}
+
 		TEST_METHOD(TestMethodReadForward)
 		{
 			const int cap = 10;
-			CircleQueue<int> q(cap);
+			CircleQueue q(cap);
 			for (int i = 0; i < cap; i++) {
-					q.pushBack(i);
+				q.insert(&BigInt(to_string(i)), 0);
 			}
 			for (int i = 0; i < cap; i++) {
-				Assert::AreEqual(q.pop(0), i);
+				BigInt l = *(BigInt*)q.pop(0);
+				BigInt r = BigInt(to_string(cap - i - 1));
+				Assert::IsTrue(l == r);
 			}
 		}
-		TEST_METHOD(TestMethodReadBackword)
+		/*TEST_METHOD(TestMethodReadBackword)
 		{
 			const int cap = 10;
 			CircleQueue<int> q(cap);
@@ -79,6 +85,6 @@ namespace CicrleQueueTest
 				Assert::IsTrue(n > el);
 				el = n;
 			}
-		}
+		}*/
 	};
 }
