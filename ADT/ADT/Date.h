@@ -47,6 +47,7 @@ public:
 		month = 0;
 		year = 0;
 	}
+	Date(const Date &dt): day(dt.day), month(dt.month), year(dt.year) {}
 	Date(unsigned int d, unsigned int m, unsigned int y) : day(d), month(m), year(y) {
 		month = (month % 13 + 13) % 13;
 		if (month == 2 && (y % 4 != 0 || y % 100 == 0 && y % 400 != 0)) {
@@ -65,7 +66,14 @@ public:
 	Date operator=(const Date &rD) {
 		day = rD.day;
 		month = rD.month;
-		year = rD.year;
+	Date operator=(const ADT* rD) {
+		Date* obj;
+		if (!toDerived(rD, &obj)) {
+			throw exception("wrong type");
+		}
+		day = obj->day;
+		month = obj->month;
+		year = obj->year;
 		return *this;
 	}
 	~Date() {}

@@ -15,7 +15,7 @@ using namespace std;
 const int base = 10;
 
 class BigInt: public ADT {
-	char* value;//десяичная система счисления для записи каждого символа-цифры
+	char* value;//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅ
 	size_t size;
 	bool sign;//pos - true, neg - false
 	static bool toDerived(const ADT* obj, BigInt ** target = nullptr)
@@ -76,10 +76,14 @@ public:
 				value[j++] = s[i--];
 		}
 	}
-	BigInt(const BigInt &newInt) {
-		char* newVal = newInt.getValue();
-		sign = newInt.getSign();
-		size = newInt.getSize();
+	BigInt(const BigInt* rBi) {
+		BigInt* obj;
+		if (!toDerived(rBi, &obj)) {
+			throw exception("wrong type");
+		}
+		char* newVal = obj->getValue();
+		sign = obj->getSign();
+		size = obj->getSize();
 		value = new char[size + 1];
 		value[size] = 0;
 		for (int i = 0; i < size; i++) {
@@ -92,6 +96,9 @@ public:
 	}
 	char* getValue() const {
 		return value;
+	}
+	string ToString() const {
+		return string(value);
 	}
 	unsigned int getSize() const {
 		return size;

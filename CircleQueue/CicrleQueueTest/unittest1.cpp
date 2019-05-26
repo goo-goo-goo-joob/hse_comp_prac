@@ -7,11 +7,11 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace CicrleQueueTest
-{		
+{
 	TEST_CLASS(UnitTest1)
 	{
 	public:
-		
+
 		TEST_METHOD(TestMethodPushBack)
 		{
 			const int cap = 10;
@@ -46,15 +46,18 @@ namespace CicrleQueueTest
 			}
 			Assert::AreEqual(thrown, extra_read);
 		}
+
 		TEST_METHOD(TestMethodReadForward)
 		{
 			const int cap = 10;
 			CircleQueue q(cap);
 			for (int i = 0; i < cap; i++) {
-					q.pushBack(&BigInt((char*)(i)));
+				q.insert(&BigInt(to_string(i)), 0);
 			}
 			for (int i = 0; i < cap; i++) {
-				Assert::AreEqual((BigInt*)q.pop(0), &BigInt((char*)(i)));
+				auto l = (BigInt*)q.pop(0);
+				auto r = &BigInt(to_string(i));
+				Assert::IsTrue(l == r);
 			}
 		}
 		/*TEST_METHOD(TestMethodReadBackword)

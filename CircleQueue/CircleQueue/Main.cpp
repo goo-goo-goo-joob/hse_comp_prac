@@ -21,18 +21,23 @@ int main() {
 	//	cerr << e.what() << endl;
 	//}
 	//cout << q;
-	const int cap = 10;
-	const int extra_read = 5;
-	CircleQueue q(cap);
-	int thrown = 0;
-	Date dt(19, 9, 1958);
-	for (int i = 0; i < cap + extra_read; i++) {
-		try {
-			q.insert(&dt, 0);
+
+	for (int it = 0; it < 1000; it++)
+	{
+		const int cap = 10;
+		const int extra_read = 5;
+		CircleQueue q(cap);
+		int thrown = 0;
+		Date dt(19, 9, 1958);
+		for (int i = 0; i < cap + extra_read; i++) {
+			try {
+				q.insert(&dt, 0);
+			}
+			catch (const exception&) {
+				thrown++;
+			}
 		}
-		catch (const exception&) {
-			thrown++;
-		}
+
 	}
 	return 0;
 }
